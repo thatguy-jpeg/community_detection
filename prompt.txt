@@ -1,0 +1,42 @@
+make me an interactive html page (one file) that teaches community detection in graphs. i'm a student studying for a big data final.
+
+use a small fake social network (about 15-20 nodes, 2-3 clear groups with a few bridge edges) with a "new graph" button.
+
+it should have:
+- girvan-newman: show each edge's betweenness as its thickness or color. a "remove highest-betweenness edge" button, then recompute and show the graph splitting into communities (color nodes by component)
+- a modularity Q chart that updates after every removal, with the best number of clusters marked so i can see how to pick it
+- spectral clustering: show the laplacian L = D − A for a tiny 6-node graph, plot the second eigenvector (fiedler vector) values per node, and color nodes by sign (split at 0)
+- a toggle between the two methods
+
+show the key formulas (betweenness = number of shortest paths through the edge, Q, L = D − A) and highlight whatever changes each step. keep it clean and easy to use.
+
+make the fake graph have clearer groups, and verify Q peaks at the right number of communities
+
+
+
+Building the page now: one HTML file, with the graph generator tested in Node first so Q is verified to peak at 3 communities.
+
+Name clash from my own destructuring; fixing the harness.
+
+The Community Detection Lab page is published. It has a Girvan–Newman view and a Spectral view, with a toggle at the top.
+
+**Girvan–Newman view**
+- It starts on a fake network of 15–20 people in 3 groups, joined by 5 bridge edges. The "New graph" button builds a different one.
+- Edge thickness and darkness show betweenness. The next edge to remove is highlighted.
+- Pressing "Remove highest-betweenness edge" recomputes betweenness and recolors the nodes by component. "Next split" removes edges until the graph splits, and "Run" auto-plays.
+- A modularity Q chart updates after every split and marks the best k. A "Show the full curve" box reveals the whole curve in advance. A table shows each community's term in Q.
+
+**Spectral view**
+- It uses the 6-node graph from the lecture. A stepper highlights A, D, L = D − A, the eigenvalues, and the sign split. The Fiedler vector is plotted per node, and nodes are colored by sign.
+- You can click two nodes to add or remove an edge and watch everything recompute.
+
+**What I verified** (in Node, not in a browser):
+- **Betweenness and spectral:** a hand-checkable path graph gave the right betweenness. The lecture graph gave eigenvalues 0, 1, 3, 3, 4, 5, and a Fiedler vector of ±0.29, ±0.58 with {1,2,3} vs {4,5,6}. Both match your slides.
+- **Q peak:** my first generator failed on 120 of 5,000 test graphs, either because Q peaked at the wrong k or because the best-Q split didn't match the groups. I made the groups denser and added a check inside "New graph". It only keeps graphs where Q peaks at k = 3 with a clean margin and the split matches the built groups. After that, 0 of 5,000 tested seeds failed. The smallest gap between Q at k = 3 and the runner-up was 0.05.
+- **Page behavior:** I clicked through every control in a simulated browser and got no script errors.
+
+**Not done:** I haven't looked at the page in a real browser, so the layout and phone view are unchecked.
+
+Two things to know:
+- In the Q formula, m and the degrees come from the original graph, not the shrinking one. The exam notes on the page repeat this.
+- The page is private until you share it.
